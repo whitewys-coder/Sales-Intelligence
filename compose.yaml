@@ -1,0 +1,16 @@
+services:
+  sales-agent:
+    build: .
+    env_file: .env
+    environment:
+      HOST: 0.0.0.0
+      DATA_DIR: /app/data
+      PORT: 8080
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - sales-agent-data:/app/data
+    restart: unless-stopped
+    stop_grace_period: 45s
+volumes:
+  sales-agent-data:

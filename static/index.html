@@ -1,0 +1,11 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Agate · Sales Agent</title><link rel="stylesheet" href="/style.css"></head><body>
+<header><div class="logo">A</div><div><h1>Agate Sales Agent</h1><span>账户研究 · 证据验证 · 销售协作</span></div><div id="mode" class="badge">未连接</div></header>
+<main><section id="login"><h2>连接你的工作台</h2><p>输入启动时设置的 APP_TOKEN。密钥只在当前页面内存中保留。</p><input id="token" type="password" autocomplete="off" placeholder="APP_TOKEN"><button id="connect">连接</button></section>
+<div id="workspace" hidden><section class="intro"><div><p class="eyebrow">SALES INTELLIGENCE / 01</p><h2>让每一次联系，都有充分依据。</h2><p id="schedule"></p></div><div><button id="run">运行五个 Agent</button> <button class="secondary" id="export">导出运行数据</button></div></section>
+<div class="agents"><article>01 <b>Research</b><small>寻找真实触发信号</small></article><article>02 <b>Validation</b><small>核对来源与集团关系</small></article><article>03 <b>Scoring</b><small>固定规则透明评分</small></article><article>04 <b>Sales</b><small>起草 · 审批 · 发送</small></article><article>05 <b>Follow-up</b><small>回复分类与退信冻结</small></article></div>
+<div class="stats" id="stats"></div>
+<section><h3>扫描范围</h3><textarea id="scope" rows="3" placeholder="例如：德国/法国制造业，10–500人，近90天Physical AI、招标和扩产信号"></textarea><button class="secondary" id="saveScope">保存扫描范围</button><p class="muted">地域与行业可以调整；排除规则、来源门槛和人工审批仍然生效。</p></section>
+<section><h3>账户情报中心</h3><div class="table-wrap"><table><thead><tr><th>账户</th><th>状态</th><th>评分</th><th>触发信号</th><th>来源与详情</th></tr></thead><tbody id="accounts"></tbody></table></div></section>
+<section><h3>邮件审批</h3><p class="muted">先阅读来源与正文，再批准。批准后需单独点击发送；任何正文编辑都会使批准失效。</p><div id="drafts"></div></section>
+<section><h3>运行记录</h3><div id="runs"></div><details><summary>Agent 执行日志</summary><div id="events"></div></details></section></div>
+<p id="notice" role="status"></p></main><footer>Agate 1.0 · 独立运行版 · 演示数据与真实数据隔离</footer><script src="/app.js"></script></body></html>

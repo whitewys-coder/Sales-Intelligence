@@ -6,7 +6,7 @@ from ..provider import obj, array, TEXT, BOOL, NUMBER
 
 SOURCE = obj({'url': TEXT, 'kind': TEXT, 'claim': TEXT, 'publisher': TEXT})
 SCHEMA = obj({**{k: TEXT for k in ('company', 'domain', 'group_domain', 'country', 'trigger', 'trigger_date',
-                                 'contact', 'email', 'why_now', 'fit_reason', 'exclusion_reason')},
+                                 'contact', 'linkedin_url', 'email', 'why_now', 'fit_reason', 'exclusion_reason')},
               'employees': NUMBER, 'in_scope': BOOL, 'excluded': BOOL, 'independent_sources': BOOL,
               'technical_fit': BOOL, 'strategic': BOOL, 'contact_verified': BOOL,
               'email_verified': BOOL, 'sources': array(SOURCE)})
@@ -71,6 +71,7 @@ class ValidationAgent:
     def run(self, candidate, scope):
         report, urls = self.provider.research('Independently verify this account: ' + json.dumps(candidate) +
             '. Scope: ' + scope + '. Open official source for trigger and date; two independent sources for company. '
+            'Find the named contact current LinkedIn person URL, retrieve it as a contact source; blank if unverified. '
             'Verify group ownership (not logo alone), public contact/email and staff count. Identify evidence for '
             'scope/technical fit/exclusions. Reprinted press releases are one source. Tender requires software eligibility '
             'and unexpired deadline; otherwise excluded. Show exact publicly listed email only. '

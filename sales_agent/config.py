@@ -34,6 +34,8 @@ class Config:
     schedule_enabled: bool = False
     bind: str = '127.0.0.1'
     port: int = 8080
+    leadcontact_enabled: bool = False
+    leadcontact_max_emails: int = 3
 
     @classmethod
     def env(cls):
@@ -52,13 +54,17 @@ class Config:
                 timezone=os.getenv('APP_TIMEZONE', 'Asia/Shanghai'),
                 schedule_hour=int(os.getenv('SCHEDULE_HOUR', '9')),
                 schedule_enabled=os.getenv('SCHEDULE_ENABLED', 'false').lower() == 'true',
-                bind=os.getenv('HOST', '127.0.0.1'), port=int(os.getenv('PORT', '8080')))
+                bind=os.getenv('HOST', '127.0.0.1'), port=int(os.getenv('PORT', '8080')),
+                leadcontact_enabled=os.getenv('LEADCONTACT_ENABLED', 'false').lower() == 'true',
+                leadcontact_max_emails=int(os.getenv('LEADCONTACT_MAX_EMAILS', '3')))
         if c.mode not in ('demo', 'live'):
             raise ValueError('APP_MODE must be demo or live')
         if len(c.token) < 24 or c.token.startswith('REPLACE_'):
             raise ValueError('Set APP_TOKEN to a random value of at least 24 characters')
         if not 1 <= c.max_accounts <= 10 or not 0 <= c.schedule_hour <= 23:
             raise ValueError('MAX_ACCOUNTS=1..10; SCHEDULE_HOUR=0..23')
+        if not 0 <= c.leadcontact_max_emails <= 3:
+            raise ValueError("LEADCONTACT_MAX_EMAILS must be 0..3")
         return c
 
     def check_live(self):

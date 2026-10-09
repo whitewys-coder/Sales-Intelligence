@@ -116,3 +116,24 @@ python3 -m unittest discover -s tests -v
 
 - [OpenAI Responses Web Search](https://developers.openai.com/api/docs/guides/tools-web-search)
 - [OpenAI Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs)
+
+## LeadContact 邮箱接入（2026-10-09）
+
+已实现正式域名 API 的余额、高级人员筛选、邮箱查询；无电话查询及自动发送功能。
+设置 `LEADCONTACT_ENABLED=true`、`LEADCONTACT_API_KEY`，重启服务后在 live 管线中启用。
+`LEADCONTACT_MAX_EMAILS=3` 为每轮上限（0–3）；默认关闭，不因更新代码自动消耗积分。
+只为独立验证阶段取得 LinkedIn 人员来源、通过业务匹配且未重复的账户补全；
+结果存入账户 `leadcontact`，在原有详情中展示，不改变原邮箱、验证资格或发送审批。
+供应商 valid 标记不代表邮件必然送达。缺少公共邮箱证据的账户仍需后续核验。
+
+无需 OpenAI 或邮箱配置即可独立测试：
+```bash
+python3 -m sales_agent.leadcontact credits
+python3 -m sales_agent.leadcontact search --keyword Montageautomatisierung --output private/candidates.json
+python3 -m sales_agent.leadcontact email --profile-url 'https://www.linkedin.com/in/VERIFIED_PERSON' --output private/email.json
+```
+将密钥配置在本机 `.env` 或托管环境 Secret；不要提交密钥、查询结果或联系人信息。
+搜索可能收费且文档未明确价格；2026-10-09 一次返回7人的查询实测消耗35积分，
+这不是后续查询的固定价格保证。邮箱文档价格10积分/次；每次查询前检查余额。
+查询错误不自动重试，需先核对余额。运行全套 Agent 仍需要原 OpenAI/邮箱配置。
+代码更新不表示已有服务器已重启或定时任务已启用。

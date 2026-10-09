@@ -7,6 +7,7 @@ from .config import Config
 from .store import Store, now, uid
 from .provider import Provider
 from .mail import Mailbox
+from .leadcontact import LeadContact, enrich_account
 from .agents import ResearchAgent, ValidationAgent, ScoringAgent, SalesAgent, FollowUpAgent
 from .agents.validation import evidence_gate
 
@@ -73,11 +74,21 @@ class Engine:
                 exclusions += [x.get('domain') for x in self.db.all('contacts')]
                 candidates, audit = self.stage(self.research.name, run['id'], lambda: self.research.run(scope, exclusions))
                 run['research'] = audit
+                lc_count = 0
+                lc = LeadContact() if self.c.leadcontact_enabled else None
                 for candidate in candidates:
                     a = self.stage(self.validation.name, run['id'], lambda: self.validation.run(candidate, scope))
                     if self.known(a):
                         self.db.event(self.validation.name, 'excluded', 'Existing account/group/domain: ' + a.get('company', ''), run['id'])
                         continue
+                    if lc and lc_count < self.c.leadcontact_max_emails:
+                        try:
+                            if enrich_account(a, lc):
+                                lc_count += 1
+                        except Exception:
+                            # Stop paid enrichment after an uncertain result; never retry this run.
+                            lc = None
+                            self.db.event('LeadContact', 'failed', 'Enrichment stopped; review credits before retry', run['id'])
                     a.update(id=uid(), updated_at=now(), demo=False)
                     a = self.stage(self.scoring.name, run['id'], lambda: self.scoring.run(a))
                     # Generate before saving account so a transient failure can be retried on a later run.
